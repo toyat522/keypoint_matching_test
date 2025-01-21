@@ -1,6 +1,6 @@
 from ..common.matcher_base import MatcherBase
+from ..common.viz2d import plot_images, plot_matches, plot_keypoints
 from .lightglue import LightGlue
-from .viz2d import plot_images, plot_matches, plot_keypoints
 from .superpoint import SuperPoint
 from .utils import load_image, rbd
 

@@ -1,7 +1,7 @@
 from ..common.matcher_base import MatcherBase
+from ..common.viz2d import plot_images, plot_matches, plot_keypoints
 from .matching import Matching
 from .utils import read_image
-from ..lightglue.viz2d import plot_images, plot_matches, plot_keypoints
 
 import matplotlib.pyplot as plt
 import torch
