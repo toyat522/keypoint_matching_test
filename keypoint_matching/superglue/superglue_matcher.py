@@ -29,12 +29,12 @@ class SuperGlueMatcher(MatcherBase):
 
     def load_image(self, img_path, resize):
         _, img, _ = read_image(img_path, self.device, resize, rotation=0, resize_float=False)
-        return img.squeeze()
+        return img.squeeze(0)
 
     def execute(self, img0, img1):
         # Perform the matching
-        img0 = img0.unsqueeze(0).unsqueeze(0)
-        img1 = img1.unsqueeze(0).unsqueeze(0)
+        img0 = img0.unsqueeze(0)
+        img1 = img1.unsqueeze(0)
         pred = self.matching({"image0": img0, "image1": img1})
         pred = {k: v[0].cpu().numpy() for k, v in pred.items()}
         kpts0, kpts1 = pred["keypoints0"], pred["keypoints1"]
