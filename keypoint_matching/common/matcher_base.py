@@ -2,11 +2,15 @@ from abc import ABC, abstractmethod
 
 class MatcherBase(ABC):
     @abstractmethod
-    def load_image(self, img_path, resize, device=None):
+    def __init__(self, max_num_keypoints=2048, device=None):
         pass
 
     @abstractmethod
-    def execute(self, img0_path, img1_path, max_num_keypoints, device=None):
+    def load_image(self, img_path, resize):
+        pass
+
+    @abstractmethod
+    def execute(self, img0, img1):
         pass
 
     @abstractmethod

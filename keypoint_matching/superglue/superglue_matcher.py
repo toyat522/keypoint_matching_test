@@ -7,16 +7,11 @@ import matplotlib.pyplot as plt
 import torch
 
 class SuperGlueMatcher(MatcherBase):
-    def load_image(self, img_path, resize, device):
+    def __init__(self, max_num_keypoints=2048, device=None):
         if device is None:
-            device = "cuda" if torch.cuda.is_available() else "cpu"
-
-        _, img, _ = read_image(img_path, device, resize, rotation=0, resize_float=False)
-        return img.squeeze()
-
-    def execute(self, img0, img1, max_num_keypoints, device=None):
-        if device is None:
-            device = "cuda" if torch.cuda.is_available() else "cpu"
+            self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        else:
+            self.device = device
 
         config = {
             "superpoint": {
@@ -30,12 +25,17 @@ class SuperGlueMatcher(MatcherBase):
                 "match_threshold": 0.2,
             }
         }
-        matching = Matching(config).eval().to(device)
+        self.matching = Matching(config).eval().to(self.device)
 
+    def load_image(self, img_path, resize):
+        _, img, _ = read_image(img_path, self.device, resize, rotation=0, resize_float=False)
+        return img.squeeze()
+
+    def execute(self, img0, img1):
         # Perform the matching
         img0 = img0.unsqueeze(0).unsqueeze(0)
         img1 = img1.unsqueeze(0).unsqueeze(0)
-        pred = matching({"image0": img0, "image1": img1})
+        pred = self.matching({"image0": img0, "image1": img1})
         pred = {k: v[0].cpu().numpy() for k, v in pred.items()}
         kpts0, kpts1 = pred["keypoints0"], pred["keypoints1"]
         matches, _ = pred["matches0"], pred["matching_scores0"]

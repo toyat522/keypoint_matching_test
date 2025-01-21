@@ -4,16 +4,16 @@ class KeypointMatcher:
     def set_matcher(self, matcher: MatcherBase):
         self.matcher = matcher
 
-    def load_image(self, img_path, resize=None, device=None):
+    def load_image(self, img_path, resize=None):
         """
         Loads the images for image matching in the desired size.
             Arguments:
                 img_path (str): Path to the image to be matched.
                 resize (tuple of int, optional): Desired size to resize the images to, specified as (height, width).
         """
-        return self.matcher.load_image(img_path, resize, device)
+        return self.matcher.load_image(img_path, resize)
     
-    def execute(self, img0, img1, max_num_keypoints, device=None):
+    def execute(self, img0, img1):
         """
         Performs image matching using the selected strategy.
             Arguments:
@@ -28,7 +28,7 @@ class KeypointMatcher:
                 m_kpts0 (Tensor): Matched keypoints from the first image.
                 m_kpts1 (Tensor): Matched keypoints from the second image.
         """
-        return self.matcher.execute(img0, img1, max_num_keypoints, device)
+        return self.matcher.execute(img0, img1)
 
     def plot(self, img0, img1, m_kpts0, m_kpts1, kpts0, kpts1):
         """

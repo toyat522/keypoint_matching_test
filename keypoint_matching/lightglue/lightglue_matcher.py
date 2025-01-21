@@ -9,28 +9,27 @@ import matplotlib.pyplot as plt
 import torch
 
 class LightGlueMatcher(MatcherBase):
-    def load_image(self, img_path, resize, device):
+    def __init__(self, max_num_keypoints=2048, device=None):
         if device is None:
-            device = "cuda" if torch.cuda.is_available() else "cpu"
+            self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        else:
+            self.device = device
 
+        self.extractor = SuperPoint(max_num_keypoints=max_num_keypoints).eval().to(self.device)
+        self.matcher = LightGlue(features="superpoint").eval().to(self.device)
+
+    def load_image(self, img_path, resize):
         if isinstance(resize, List) or isinstance(resize, Tuple):
             resize = [resize[1], resize[0]]
-        return load_image(img_path, resize=resize).to(device)
+        return load_image(img_path, resize=resize).to(self.device)
 
-    def execute(self, img0, img1, max_num_keypoints, device=None):
-        if device is None:
-            device = "cuda" if torch.cuda.is_available() else "cpu"
-
-        # SuperPoint+LightGlue
-        extractor = SuperPoint(max_num_keypoints=max_num_keypoints).eval().to(device)
-        matcher = LightGlue(features="superpoint").eval().to(device)
-
+    def execute(self, img0, img1):
         # Extract local features
-        feats0 = extractor.extract(img0)
-        feats1 = extractor.extract(img1)
+        feats0 = self.extractor.extract(img0)
+        feats1 = self.extractor.extract(img1)
 
         # Match the features
-        matches01 = matcher({"image0": feats0, "image1": feats1})
+        matches01 = self.matcher({"image0": feats0, "image1": feats1})
         feats0, feats1, matches01 = [rbd(x) for x in [feats0, feats1, matches01]]  # remove batch dimension
 
         # Keep the matching keypoints
