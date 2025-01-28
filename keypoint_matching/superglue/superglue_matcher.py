@@ -7,17 +7,17 @@ import matplotlib.pyplot as plt
 import torch
 
 class SuperGlueMatcher(MatcherBase):
-    def __init__(self, max_num_keypoints=2048, device=None):
-        if device is None:
+    def __init__(self, **kwargs):
+        if "device" not in kwargs:
             self.device = "cuda" if torch.cuda.is_available() else "cpu"
         else:
-            self.device = device
+            self.device = kwargs["device"]
 
         config = {
             "superpoint": {
                 "nms_radius": 4,
                 "keypoint_threshold": 0.005,
-                "max_keypoints": max_num_keypoints 
+                "max_keypoints": kwargs["max_num_keypoints"]
             },
             "superglue": {
                 "weights": "indoor",

@@ -9,14 +9,24 @@ import matplotlib.pyplot as plt
 import torch
 
 class LightGlueMatcher(MatcherBase):
-    def __init__(self, max_num_keypoints=2048, device=None):
-        if device is None:
+    def __init__(self, **kwargs):
+        if "device" not in kwargs:
             self.device = "cuda" if torch.cuda.is_available() else "cpu"
         else:
-            self.device = device
+            self.device = kwargs["device"]
 
-        self.extractor = SuperPoint(max_num_keypoints=max_num_keypoints).eval().to(self.device)
-        self.matcher = LightGlue(features="superpoint").eval().to(self.device)
+        lightglue_args = {"features": "superpoint"}
+
+        if "depth_confidence" in kwargs:
+            lightglue_args["depth_confidence"] = kwargs["depth_confidence"]
+        if "width_confidence" in kwargs:
+            lightglue_args["width_confidence"] = kwargs["width_confidence"]
+
+        self.extractor = SuperPoint(max_num_keypoints=kwargs["max_num_keypoints"]).eval().to(self.device)
+        self.matcher = LightGlue(**lightglue_args).eval().to(self.device)
+
+        if "compile" in kwargs and kwargs["compile"]:
+            self.matcher = torch.compile(self.matcher, mode="reduce-overead")
 
     def load_image(self, img_path, resize):
         if isinstance(resize, List) or isinstance(resize, Tuple):

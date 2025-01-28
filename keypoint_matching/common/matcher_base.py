@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class MatcherBase(ABC):
     @abstractmethod
-    def __init__(self, max_num_keypoints=2048, device=None):
+    def __init__(self, **kwargs):
         pass
 
     @abstractmethod
