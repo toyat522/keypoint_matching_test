@@ -39,14 +39,12 @@ class LightGlueMatcher(MatcherBase):
         start = time.time()
         feats0 = self.extractor.extract(img0)
         feats1 = self.extractor.extract(img1)
-        total = time.time() - start
-        print(f"extraction time: {total}")
-
+        self.extraction_time = time.time() - start
+        
         # Match the features
         start = time.time()
         matches01 = self.matcher({"image0": feats0, "image1": feats1})
-        total = time.time() - start
-        print(f"matching time: {total}")
+        self.matching_time = time.time() - start
         feats0, feats1, matches01 = [rbd(x) for x in [feats0, feats1, matches01]]  # remove batch dimension
 
         # Keep the matching keypoints
@@ -66,4 +64,10 @@ class LightGlueMatcher(MatcherBase):
 
     def get_descriptor_model(self):
         return self.extractor
+
+    def get_extraction_time(self):
+        return self.extraction_time
+
+    def get_matching_time(self):
+        return self.matching_time
 

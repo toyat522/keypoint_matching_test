@@ -52,3 +52,15 @@ class KeypointMatcher:
         Returns the model of the interest point detector
         """
         return self.matcher.get_descriptor_model()
+
+    def get_extraction_time(self):
+        """
+        Returns the time it took for keypoint extraction
+        """
+        return self.matcher.get_extraction_time()
+
+    def get_matching_time(self):
+        """
+        Returns the time it took for matching keypoints
+        """
+        return self.matcher.get_matching_time()

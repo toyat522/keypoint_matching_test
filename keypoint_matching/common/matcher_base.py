@@ -24,3 +24,12 @@ class MatcherBase(ABC):
     @abstractmethod
     def get_descriptor_model(self):
         pass
+
+    @abstractmethod
+    def get_extraction_time(self):
+        pass
+
+    @abstractmethod
+    def get_matching_time(self):
+        pass
+

@@ -59,3 +59,9 @@ class SuperGlueMatcher(MatcherBase):
     def get_descriptor_model(self):
         return self.matching.superpoint
         
+    def get_extraction_time(self):
+        return self.matching.extraction_time
+
+    def get_matching_time(self):
+        return self.matching.matching_time
+

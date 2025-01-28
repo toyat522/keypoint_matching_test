@@ -71,8 +71,7 @@ class Matching(torch.nn.Module):
         if 'keypoints1' not in data:
             pred1 = self.superpoint({'image': data['image1']})
             pred = {**pred, **{k+'1': v for k, v in pred1.items()}}
-        total = time.time() - start
-        print(f"extraction time: {total}")
+        self.extraction_time = time.time() - start
 
         # Batch all features
         # We should either have i) one image per batch, or
@@ -86,7 +85,13 @@ class Matching(torch.nn.Module):
         # Perform the matching
         start = time.time()
         pred = {**pred, **self.superglue(data)}
-        total = time.time() - start
-        print(f"matching time: {total}")
+        self.matching_time = time.time() - start
 
         return pred
+
+    def get_extraction_time(self):
+        return self.extraction_time
+
+    def get_matching_time(self):
+        return self.matching_time
+
