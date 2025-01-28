@@ -6,6 +6,7 @@ from .utils import load_image, rbd
 
 from typing import List, Tuple
 import matplotlib.pyplot as plt
+import time
 import torch
 
 class LightGlueMatcher(MatcherBase):
@@ -35,11 +36,17 @@ class LightGlueMatcher(MatcherBase):
 
     def execute(self, img0, img1):
         # Extract local features
+        start = time.time()
         feats0 = self.extractor.extract(img0)
         feats1 = self.extractor.extract(img1)
+        total = time.time() - start
+        print(f"extraction time: {total}")
 
         # Match the features
+        start = time.time()
         matches01 = self.matcher({"image0": feats0, "image1": feats1})
+        total = time.time() - start
+        print(f"matching time: {total}")
         feats0, feats1, matches01 = [rbd(x) for x in [feats0, feats1, matches01]]  # remove batch dimension
 
         # Keep the matching keypoints
