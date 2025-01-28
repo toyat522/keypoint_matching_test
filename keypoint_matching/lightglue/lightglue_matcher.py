@@ -26,7 +26,7 @@ class LightGlueMatcher(MatcherBase):
         self.matcher = LightGlue(**lightglue_args).eval().to(self.device)
 
         if "compile" in kwargs and kwargs["compile"]:
-            self.matcher = torch.compile(self.matcher, mode="reduce-overead")
+            self.matcher = torch.compile(self.matcher, mode="reduce-overhead")
 
     def load_image(self, img_path, resize):
         if isinstance(resize, List) or isinstance(resize, Tuple):

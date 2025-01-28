@@ -4,8 +4,8 @@ from keypoint_matching.lightglue.lightglue_matcher import LightGlueMatcher
 kpt_matcher = KeypointMatcher()
 kpt_matcher.set_matcher(LightGlueMatcher(
     max_num_keypoints=1024,
-    depth_confidence=0.95,
-    width_confidence=0.99,
+    depth_confidence=0.9,
+    width_confidence=0.95,
 ))
 
 print("LightGlue model:")
