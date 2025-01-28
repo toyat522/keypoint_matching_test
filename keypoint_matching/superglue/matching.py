@@ -44,6 +44,7 @@ import torch
 
 from .superpoint import SuperPoint
 from .superglue import SuperGlue
+import time
 
 
 class Matching(torch.nn.Module):
@@ -63,12 +64,15 @@ class Matching(torch.nn.Module):
         pred = {}
 
         # Extract SuperPoint (keypoints, scores, descriptors) if not provided
+        start = time.time()
         if 'keypoints0' not in data:
             pred0 = self.superpoint({'image': data['image0']})
             pred = {**pred, **{k+'0': v for k, v in pred0.items()}}
         if 'keypoints1' not in data:
             pred1 = self.superpoint({'image': data['image1']})
             pred = {**pred, **{k+'1': v for k, v in pred1.items()}}
+        total = time.time() - start
+        print(f"extraction time: {total}")
 
         # Batch all features
         # We should either have i) one image per batch, or
@@ -80,6 +84,9 @@ class Matching(torch.nn.Module):
                 data[k] = torch.stack(data[k])
 
         # Perform the matching
+        start = time.time()
         pred = {**pred, **self.superglue(data)}
+        total = time.time() - start
+        print(f"matching time: {total}")
 
         return pred
